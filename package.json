@@ -1,0 +1,17 @@
+{
+  "name": "steel-wool-hair",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "astro build"
+  },
+  "dependencies": {
+    "astro": "^7.0.0",
+    "@wix/astro": "^3.0.0",
+    "@wix/astro-pages": "^3.0.0",
+    "@wix/astro-wix-hosting-adapter": "^3.0.0",
+    "@astrojs/react": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  }
+}
