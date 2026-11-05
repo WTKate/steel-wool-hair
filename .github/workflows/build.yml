@@ -24,6 +24,8 @@ jobs:
           find .wix -maxdepth 3 -type f -print
           echo 'Metadata generator references:'
           grep -R -l 'build-metadata.json' node_modules/@wix/astro* node_modules/@wix/cli 2>/dev/null | head -20 || true
+          echo 'Adapter metadata implementation:'
+          grep -n -B 20 -A 30 'build-metadata.json' node_modules/@wix/astro/build/integration/index.mjs | head -100 || true
           test -f .wix/build-metadata.json || { echo 'RELEASE BLOCKED: Wix build metadata is missing'; exit 1; }
       - name: Package Wix server build and source
         run: zip -qr steel-wool-wix-astro.zip . -x 'node_modules/*' '.git/*' '.env*' '.astro/*'
