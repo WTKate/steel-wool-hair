@@ -18,6 +18,13 @@ jobs:
           WIX_CLIENT_ID: '90c0ea98-bdc3-4b2e-949f-0a2b7edf2985'
           WIX_SITE_ID: '3a1fe884-069e-4cfb-a76b-de7403733eed'
           WIX_CLIENT_INSTANCE_ID: '3a1fe884-069e-4cfb-a76b-de7403733eed'
+      - name: Verify Wix release metadata
+        run: |
+          echo 'Generated Wix files:'
+          find .wix -maxdepth 3 -type f -print
+          echo 'Metadata generator references:'
+          grep -R -l 'build-metadata.json' node_modules/@wix/astro* node_modules/@wix/cli 2>/dev/null | head -20 || true
+          test -f .wix/build-metadata.json || { echo 'RELEASE BLOCKED: Wix build metadata is missing'; exit 1; }
       - name: Package Wix server build and source
         run: zip -qr steel-wool-wix-astro.zip . -x 'node_modules/*' '.git/*' '.env*' '.astro/*'
       - uses: actions/upload-artifact@v4
