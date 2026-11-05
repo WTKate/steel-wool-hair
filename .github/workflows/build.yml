@@ -14,6 +14,9 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: node scripts/download-assets.mjs
       - run: npm run build
+        env:
+          WIX_CLIENT_ID: '90c0ea98-bdc3-4b2e-949f-0a2b7edf2985'
+          WIX_SITE_ID: '3a1fe884-069e-4cfb-a76b-de7403733eed'
       - name: Package Wix server build and source
         run: zip -qr steel-wool-wix-astro.zip . -x 'node_modules/*' '.git/*' '.env*' '.astro/*'
       - uses: actions/upload-artifact@v4
