@@ -18,6 +18,8 @@ jobs:
           WIX_CLIENT_ID: '90c0ea98-bdc3-4b2e-949f-0a2b7edf2985'
           WIX_SITE_ID: '3a1fe884-069e-4cfb-a76b-de7403733eed'
           WIX_CLIENT_INSTANCE_ID: '3a1fe884-069e-4cfb-a76b-de7403733eed'
+          WIX_CLIENT_PUBLIC_KEY: 'build-placeholder'
+          WIX_CLIENT_SECRET: 'build-placeholder'
       - name: Verify Wix release metadata
         run: |
           echo 'Generated Wix files:'
