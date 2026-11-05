@@ -1,0 +1,23 @@
+name: Build Wix Astro site
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --no-audit --no-fund
+      - run: node scripts/download-assets.mjs
+      - run: npm run build
+      - name: Package Wix server build and source
+        run: zip -qr steel-wool-wix-astro.zip . -x 'node_modules/*' '.git/*' '.env*' '.astro/*'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: steel-wool-wix-astro
+          path: steel-wool-wix-astro.zip
+          retention-days: 7
