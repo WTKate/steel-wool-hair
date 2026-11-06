@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://steelwoolhair.com.au/sitemap.xml
