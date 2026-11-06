@@ -1,28 +1,35 @@
 # Standard Wix Headless website launch checklist
 
-Apply this checklist to **every new Wix Headless website** and to existing headless sites when finishing or relaunching. Do not assume the Wix dashboard creates or serves SEO files for a custom frontend; verify the public website.
+Apply this checklist to all new Wix Headless sites. This version is for **Wix-managed Astro**; other frameworks and self-managed sites have different sitemap hosting requirements.
 
-## Required pages
-- [ ] Publish a **Privacy Policy** at `/privacy-policy` using the correct business name, location, contact email, actual data collection, hosting, form, analytics, booking and other third-party services.
-- [ ] Publish **Terms of Use** at `/terms-of-use` covering website use, services, external links and booking/purchasing arrangements. Adapt the draft to the business and recommend legal review.
-- [ ] Include visible links to both policies in the footer **on every page**, including the policy pages themselves.
+## Mandatory legal pages
+- [ ] Publish a **Privacy Policy** at `/privacy-policy`, tailored to the business and its actual services, forms, third-party tools and contact details.
+- [ ] Publish **Terms of Use** at `/terms-of-use`, tailored to appointments, products and other site features.
+- [ ] Add links to both pages in the footer **on every page**, including the policy pages.
+- [ ] Recommend legal review of the drafts.
 
-## Sitemap and search discovery
-- [ ] Publish a valid XML sitemap at **`/sitemap.xml`**, using absolute URLs on the **live custom domain** and listing every public, canonical, indexable route (including the two policy pages).
-- [ ] Keep the sitemap current when pages are added, removed or renamed. Avoid URLs with `.html`, staging hostnames, redirects, errors, or `noindex`.
-- [ ] Publish **`/robots.txt`** with a `Sitemap: https://<live-domain>/sitemap.xml` directive, unless an existing robots.txt already includes the correct directive.
-- [ ] Verify the public sitemap returns HTTP 200 and XML, and the robots file returns HTTP 200 and text, after the Wix release.
-- [ ] Ensure every page's canonical tag uses its final custom-domain URL, not a temporary Wix hostname.
-- [ ] Where the owner has access to Google Search Console, submit or resubmit the sitemap.
+## Correct Wix-managed Astro sitemap workflow
+- [ ] Use `@wix/astro` and `@wix/astro-pages`.
+- [ ] Register every main page as its **own `.astro` page** under `src/pages/`, even if it renders the contents of an existing HTML file using `<Fragment set:html={html} />`. A single `[...path].ts` endpoint can serve working URLs while leaving Wix's main-page registry **empty**.
+- [ ] Do **not** create `public/sitemap.xml`, `src/pages/sitemap.xml.ts`, or a `*-sitemap.xml` Astro endpoint. Wix reserves these paths and generates the XML sitemap automatically for registered pages.
+- [ ] Let Wix manage `/robots.txt` through SEO & GEO > Robots.txt Editor. If you intentionally serve your own Astro route, use the documented `wix({ robots: false })` configuration to prevent collisions.
+- [ ] Check overall and per-page indexability in Wix SEO settings. Noindex pages must not be included.
+- [ ] Build and release to the **existing Wix site**. Confirm build output `dist/client/_wix/pages.json` contains all expected main-page paths, not `[]`. Also check that `.wix/build-metadata.json` exists.
+- [ ] On the **live custom domain**, GET `/_wix/pages.json`, `/sitemap.xml`, `/pages-sitemap.xml` and `/robots.txt`. Check HTTP 200 and correct content type. The sitemap index alone being HTTP 200 **does not prove the pages sitemap has entries**: check all expected `<loc>` URLs in `/pages-sitemap.xml`.
+- [ ] Wix can briefly return an empty child sitemap after a release while page registry and sitemap generation settle; repeat an external HTTP check, not just an internal build assertion.
+- [ ] Confirm all canonicals point to the site's canonical domain and avoid competing duplicated manual SEO tags and Wix-generated SEO tags.
+- [ ] Where available, submit or check the sitemap in Google Search Console.
 
-## Headless build and release
-- [ ] Preserve the **existing** Wix site ID, Forms integration, existing content, navigation, and other services; do not create a replacement Wix site.
-- [ ] Confirm clean routes load directly, not only by client-side navigation.
-- [ ] Build the Wix Astro project, verify `.wix/build-metadata.json` and bundled public assets, then deploy to the existing site.
-- [ ] After release, check the homepage, main pages, both policy routes, footer links, `/sitemap.xml`, `/robots.txt`, and canonical URLs on the live domain.
-- [ ] Keep H1 line-height at **1.1** across the website and use a Wix Form on the contact page (established headless design requirements).
+## Build and release protections
+- [ ] Preserve the existing Wix site ID, contact Wix Form, styling, pages, and services; do not create a replacement website.
+- [ ] Verify main routes load directly on desktop and mobile.
+- [ ] Verify Privacy Policy, Terms of Use, footer links, sitemap, robots and SEO metadata after publishing.
 
-## Steel Wool Hair implementation
-- Domain: `https://steelwoolhair.com.au`
-- Pages: `/`, `/hair-menu`, `/contact`, `/privacy-policy`, `/terms-of-use`
-- Implement as explicit Astro endpoints: `src/pages/sitemap.xml.ts` and `src/pages/robots.txt.ts`. On Wix-managed Astro deployments, do not rely solely on files under `public/` for these SEO routes; check the actual live HTTP response and content type.
+## Steel Wool Hair implementation (verified 6 November 2026)
+- Primary domain: `https://www.steelwoolhair.com.au`
+- Main pages: `/`, `/hair-menu`, `/contact`, `/privacy-policy`, `/terms-of-use`
+- Source: `src/pages/*.astro` main-page routes; existing HTML page content in `src/content/`
+- Wix-managed sitemap index: `https://www.steelwoolhair.com.au/sitemap.xml`
+- Wix-managed child sitemap: `https://www.steelwoolhair.com.au/pages-sitemap.xml`
+- Wix-managed robots: `https://www.steelwoolhair.com.au/robots.txt`
+- Automatic external verification: `.github/workflows/check-live-sitemap.yml`
