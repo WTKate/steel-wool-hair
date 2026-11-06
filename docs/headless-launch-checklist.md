@@ -25,4 +25,4 @@ Apply this checklist to **every new Wix Headless website** and to existing headl
 ## Steel Wool Hair implementation
 - Domain: `https://steelwoolhair.com.au`
 - Pages: `/`, `/hair-menu`, `/contact`, `/privacy-policy`, `/terms-of-use`
-- Source: `public/sitemap.xml` and `public/robots.txt`
+- Implement as explicit Astro endpoints: `src/pages/sitemap.xml.ts` and `src/pages/robots.txt.ts`. On Wix-managed Astro deployments, do not rely solely on files under `public/` for these SEO routes; check the actual live HTTP response and content type.
