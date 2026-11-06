@@ -2,7 +2,9 @@ import type { APIRoute } from "astro";
 import home from "../content/home.html?raw";
 import hairMenu from "../content/hair-menu.html?raw";
 import contact from "../content/contact.html?raw";
-const pages: Record<string,string> = {"/":home,"/hair-menu":hairMenu,"/contact":contact};
+import privacyPolicy from "../content/privacy-policy.html?raw";
+import termsOfUse from "../content/terms-of-use.html?raw";
+const pages: Record<string,string> = {"/":home,"/hair-menu":hairMenu,"/contact":contact,"/privacy-policy":privacyPolicy,"/terms-of-use":termsOfUse};
 export const prerender = false;
 export const GET: APIRoute = ({url}) => {
  const path=url.pathname;
