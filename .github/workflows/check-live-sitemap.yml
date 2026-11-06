@@ -1,0 +1,29 @@
+name: Check live Steel Wool Hair sitemap
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/check-live-sitemap.yml'
+jobs:
+  sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Wix-generated XML sitemap and page registry
+        shell: bash
+        run: |
+          set -uo pipefail
+          for base in https://www.steelwoolhair.com.au https://steelwoolhair.com.au; do
+            for path in /sitemap.xml /pages-sitemap.xml /_wix/pages.json /robots.txt; do
+              url="${base}${path}"
+              echo "=== ${url} ==="
+              status=$(curl --location --max-time 35 --retry 2 --retry-delay 2 -sS -A "Mozilla/5.0 (compatible; SitemapVerifier/1.0)" -o /tmp/response.txt -w '%{http_code}' "${url}") || true
+              echo "HTTP ${status}"
+              head -c 750 /tmp/response.txt || true
+              echo
+            done
+          done
+          url="https://www.steelwoolhair.com.au/sitemap.xml"
+          code=$(curl --location --max-time 35 -sS -o /tmp/final-sitemap.xml -w '%{http_code}' "${url}") || exit 1
+          test "${code}" = "200"
+          grep -Eq '<sitemapindex|<urlset' /tmp/final-sitemap.xml
+          echo "PASS: sitemap.xml is live and valid XML sitemap output"
